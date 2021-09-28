@@ -22,10 +22,23 @@ RUN docker-php-ext-install \
       mysqli \
       pdo \
       pdo_mysql \
-      opcache \
       soap \
       zip \
       sockets
 
 RUN docker-php-ext-enable \
       pdo_mysql
+
+#####################################
+# xdebug:
+#####################################
+
+ARG INSTALL_XDEBUG=false
+RUN if [ ${INSTALL_XDEBUG} = true ]; then \
+    # Install the xdebug
+    pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+;fi
+
+# Copy xdebug configration
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini

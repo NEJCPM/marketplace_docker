@@ -23,11 +23,15 @@ services:
         restart: unless-stopped
         build:
             context: ./php
+            args:
+                - INSTALL_XDEBUG=${PHP_INSTALL_XDEBUG}
             dockerfile: Dockerfile
         expose:
             - "9000"    
         volumes:
             - ${APPLICATION}:/var/www/html
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         networks:
             - jcpm-marketplace-network
 
@@ -49,24 +53,24 @@ services:
         networks:
             - jcpm-marketplace-network
 
-    elastic:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
-        container_name: jcpm-markerplace-elastic
-        environment:
-            - node.name=elastic
-            - discovery.type=single-node
-            - bootstrap.memory_lock=true
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        ulimits:
-            memlock:
-                soft: -1
-                hard: -1
-        volumes:
-            - ./elastic/data:/usr/share/elasticsearch/data
-        ports:
-            - "${ELASTIC_PORT}:9200"
-        networks:
-            - jcpm-marketplace-network
+    # elastic:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    #     container_name: jcpm-markerplace-elastic
+    #     environment:
+    #         - node.name=elastic
+    #         - discovery.type=single-node
+    #         - bootstrap.memory_lock=true
+    #         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    #     ulimits:
+    #         memlock:
+    #             soft: -1
+    #             hard: -1
+    #     volumes:
+    #         - ./elastic/data:/usr/share/elasticsearch/data
+    #     ports:
+    #         - "${ELASTIC_PORT}:9200"
+    #     networks:
+    #         - jcpm-marketplace-network
 
 networks:
     jcpm-marketplace-network:
