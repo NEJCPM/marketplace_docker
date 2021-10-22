@@ -16,7 +16,9 @@ services:
         links:
             - php
         networks:
-            - jcpm-marketplace-network
+            jcpm-marketplace-network:
+                aliases:
+                    - web1.marketplace.test
 
     php:
         container_name: jcpm-marketplace-php
